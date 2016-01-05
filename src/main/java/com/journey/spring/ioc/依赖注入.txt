@@ -1,0 +1,7 @@
+1. 属性注入（setXxx()）；默认构造函数，并给需要注入的属性提供setter方法，变量不作要求。
+    spring调用默认构造方法然后通过反射调用set方法注入属性
+    注：javaBean属性命名规范：变量的前两个字母要么全大写，要么全小写。例如：iCar不合法。ICar合法
+      例如bean中有属性iCar和set方法方法setICar。xml配置文件<property name="iCar" />会报找不到set方法错误，
+       应配置为<property name="ICar" />
+2. 构造函数注入：提供带参数构造
+3. 工厂方法注入
