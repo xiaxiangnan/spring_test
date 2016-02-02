@@ -12,7 +12,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 /**
- *
+ * 容器
  * Created by zhangyuan on 15/12/30.
  */
 public class BeanFactoryCreate {
