@@ -24,5 +24,11 @@
     http://www.springframework.org/schema/util
     http://www.springframework.org/schema/util/spring-util.xsd">
 
+    <!-- 扫描类包以应用注解定义的bean -->
+    <context:component-scan base-package="com.journey.spring.ioc.beanannotation"/>
+
+    <context:component-scan base-package="com.journey.spring.ioc">
+        <context:include-filter type="regex" expression="com\.journey\.spring\.ioc\.beanannotation\..*"/>
+    </context:component-scan>
 
 </beans>
