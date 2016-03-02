@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/jdbc
+    http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
+    http://www.springframework.org/schema/cache
+    http://www.springframework.org/schema/cache/spring-cache-3.2.xsd
+    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/util
+    http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+    <bean id="car" class="com.journey.spring.ioc.beanXML.Car"
+            p:maxSpeed="400"
+            >
+        <property name="brand"><value><![CDATA[宝马&X6]]></value></property>
+        <!-- 空字符串 -->
+        <property name="color"><value/></property>
+    </bean>
+    <!-- 1.字面值 p:属性名="xxx"；2.引用对象 p:属性名-ref="xxx" -->
+    <bean id="boss" class="com.journey.spring.ioc.beanXML.Boss"
+            p:car-ref="car">
+        <!-- set null value -->
+        <property name="name"><null/></property>
+    </bean>
+
+    <bean id="bossAutowire" class="com.journey.spring.ioc.beanXML.Boss" autowire="byName">
+        <!-- set null value -->
+        <property name="name" value="bitch"/>
+    </bean>
+
+    <!-- 内部bean -->
+    <bean id="boss1" class="com.journey.spring.ioc.beanXML.Boss">
+        <property name="car">
+            <bean class="com.journey.spring.ioc.beanXML.Car"
+                  p:brand="宝马X2"
+                  p:maxSpeed="100"
+                  p:color="red"
+                    />
+        </property>
+    </bean>
+
+    <!-- 集合合并 -->
+    <!-- abstract不能实例化 -->
+    <bean id="parentBoss" abstract="true"
+          class="com.journey.spring.ioc.beanXML.Boss">
+        <property name="set">
+            <set>
+                <value>p1</value>
+                <value>p2</value>
+                <value>p3</value>
+            </set>
+        </property>
+    </bean>
+    <bean id="childBoss" parent="parentBoss">
+        <property name="set">
+            <!-- true表示和父bean同名值合并，false则不会合并，只有两个值 -->
+            <set merge="true">
+                <value>c1</value>
+                <value>c2</value>
+            </set>
+        </property>
+    </bean>
+
+    <!-- 集合类型Bean -->
+    <util:list id="list" list-class="java.util.ArrayList" value-type="java.lang.String">
+        <value>list1</value>
+        <value>list2</value>
+        <value>list3</value>
+    </util:list>
+
+
+    <!-- 方法注入：1.lookup-method方法注入 2. 方法替换replaced－method-->
+    <!-- lookup-method方法注入 适用范围：通过一个singleton Bean获取一个prototype时使用 -->
+    <bean id="car1" class="com.journey.spring.ioc.beanXML.Car"
+          p:maxSpeed="400" scope="prototype"
+            >
+    </bean>
+    <!-- spring将在运行期间为MacgicBoss接口动态实现 -->
+    <bean id="magicBoss" class="com.journey.spring.ioc.beanXML.MagicBoss">
+        <lookup-method name="getCar" bean="car1"/>
+    </bean>
+
+    <!-- 方法替换replaced－method -->
+    <bean id="boss2" class="com.journey.spring.ioc.beanXML.Boss">
+        <replaced-method name="getCar" replacer="bossRM"/>
+    </bean>
+    <bean id="bossRM" class="com.journey.spring.ioc.beanXML.BossMethodReplace"/>
+
+    <!-- 继承 -->
+    <!-- abstract表示不实例化该bean -->
+    <bean id="abstractCar" class="com.journey.spring.ioc.beanXML.Car"
+          p:maxSpeed="400" p:brand="brand" abstract="true"
+            >
+    </bean>
+    <bean id="carChild" p:color="red" parent="abstractCar"/>
+    <!-- depends-on前置依赖保障carChild2引用carChild为初始化好的 -->
+    <bean id="carChild2" p:color="black" parent="abstractCar"
+           depends-on="carChild"/>
+
+    <!-- FactoryBean -->
+    <bean id="carFactoryBean" class="com.journey.spring.ioc.beanXML.CarFactoryBean"
+            p:carInfo="宝马730,red,200"/>
+
+
+    <!-- 引入 -->
+    <!--<import resource="classpath:ioc-beanlifecycle.xml"/>-->
+
+
+</beans>
